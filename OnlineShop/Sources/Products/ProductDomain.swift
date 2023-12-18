@@ -18,7 +18,7 @@ public struct ProductDomain {
         }
         
         public var id: String {
-            product.id
+            "\(product.id)"
         }
         public let product: Product
     }
@@ -45,7 +45,7 @@ public struct ProductView: View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             HStack {
                 AsyncImage(
-                    url: URL(string: viewStore.product.imageString)
+                    url: URL(string: viewStore.product.image)
                 ) { image in
                     image
                         .resizable()
@@ -57,9 +57,12 @@ public struct ProductView: View {
                 }
                 VStack(alignment: .leading) {
                     Text(viewStore.product.title)
-                        .font(.title)
+                        .font(.title2)
+                        .lineLimit(1)
                     Text(viewStore.product.description)
+                        .lineLimit(2)
                     Text("Price: $\(viewStore.product.price.description)")
+                        .font(.title3)
                 }
             }
         }
