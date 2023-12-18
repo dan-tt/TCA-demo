@@ -1,3 +1,10 @@
 
-TCADemo.xcodeproj/project.xcworkspace/xcuserdata/dan.tt.xcuserdatad/UserInterfaceState.xcuserstate
-TCADemo.xcodeproj/xcuserdata/dan.tt.xcuserdatad/xcschemes/xcschememanagement.plist
+xcuserdata/
+.build/
+
+### **/*.lock
+#**/*.md
+**/.DS_Store
+
+### *.lock
+#*.md
