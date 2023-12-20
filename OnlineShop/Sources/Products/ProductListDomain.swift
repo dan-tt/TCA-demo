@@ -9,6 +9,7 @@ import Common
 import ComposableArchitecture
 import Foundation
 import SwiftUI
+import Carts
 
 @Reducer
 public struct ProductListDomain {
@@ -17,6 +18,11 @@ public struct ProductListDomain {
     public struct State: Equatable {
         public var isLoading: Bool = false
         public var products: IdentifiedArrayOf<ProductDomain.State> = []
+        
+        public var isShowCartList = false
+        public var cartListState: CartListDomain.State?
+//        public var cartListState = CartListDomain.State()
+        
         public init() {}
     }
     
@@ -42,6 +48,10 @@ public struct ProductListDomain {
         case loadProducts
         case productsResponse(Result<[Product], Error>)
         case product(id: String, action: ProductDomain.Action)
+        
+        case cartList(CartListDomain.Action)
+        case goToCartList(isPresented: Bool)
+        case reset(product: Product)
     }
     
 //    public let productClient: ProductClient
@@ -77,10 +87,52 @@ public struct ProductListDomain {
                 return .none
             case .product:
                 return .none
+                
+            // Cart list actions
+            case .cartList(let action):
+                switch action {
+                case let .cart(_, action):
+                    switch action {
+                    case .delete(let product):
+                        return .run {send in
+                            await send(.reset(product: product))
+                        }
+                    }
+                case .getTotalPrice:
+                    return .none
+                }
+            case .goToCartList(isPresented: let isPresented):
+                state.isShowCartList = isPresented
+                guard isPresented else {
+                    state.cartListState = nil
+                    return .none
+                }
+                state.cartListState = CartListDomain.State(
+                    carts: IdentifiedArrayOf(
+                        uniqueElements: state.products
+                            .compactMap { product in
+                                guard product.counterState.count > 0 else { return nil }
+                                return CartDomain.State(
+                                    cart: Cart(
+                                        product: product.product,
+                                        quantity: product.counterState.count
+                                    )
+                                )
+                            }
+                    )
+                )
+                return .none
+                
+            case .reset(let product):
+                state.products[id: "\(product.id)"]?.counterState.count = 0
+                return .none
             }
         }
         .forEach(\.products, action: /ProductListDomain.Action.product(id: action:)) {
             ProductDomain()
+        }
+        .ifLet(\.cartListState, action: /ProductListDomain.Action.cartList) {
+            CartListDomain()
         }
     }
 }
@@ -109,6 +161,30 @@ public struct ProductListView: View {
                     viewStore.send(.loadProducts)
                 }
                 .navigationTitle("Products")
+//                .toolbar {
+//                    ToolbarItem(placement: .navigationBarTrailing) {
+//                        Button {
+//                            viewStore.send(.goToCartList(isPresented: true))
+//                        } label: {
+//                            Text("Go to Cart")
+//                        }
+//                    }
+//                }
+//                .sheet(
+//                    isPresented: viewStore.binding(
+//                        get: \.isShowCartList,
+//                        send: ProductListDomain.Action.goToCartList(isPresented:)
+//                    )
+//                ) {
+//                    IfLetStore(
+//                        self.store.scope(
+//                            state: \.cartListState,
+//                            action: ProductListDomain.Action.cartList
+//                        )
+//                    ) {
+//                        CartListView(store: $0)
+//                    }
+//                }
             }
         }
     }

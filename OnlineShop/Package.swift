@@ -39,7 +39,8 @@ let package = Package(
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "Dependencies", package: "swift-dependencies"),
-                "Common"
+                "Common",
+                "Carts"
             ]
         ),
         .testTarget(
