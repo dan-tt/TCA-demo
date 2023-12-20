@@ -21,18 +21,29 @@ public struct ProductDomain {
             "\(product.id)"
         }
         public let product: Product
+        public var counterState = CounterDomain.State()
     }
     
     public enum Action: Equatable {
-        
+        case addToCart(CounterDomain.Action)
     }
     
     public var body: some Reducer<State, Action> {
+        Scope(state: \.counterState, action: /ProductDomain.Action.addToCart) {
+            CounterDomain()
+        }
         Reduce { state, action in
-            return .none
+            switch action {
+            case .addToCart(.increment):
+                return .none
+            case .addToCart(.decrement):
+                state.counterState.count = max(0, state.counterState.count)
+                return .none
+            }
         }
     }
 }
+
 
 public struct ProductView: View {
     let store: Store<ProductDomain.State, ProductDomain.Action>
@@ -63,6 +74,12 @@ public struct ProductView: View {
                         .lineLimit(2)
                     Text("Price: $\(viewStore.product.price.description)")
                         .font(.title3)
+                    AddToCartView(
+                        store: self.store.scope(
+                            state: \.counterState,
+                            action: ProductDomain.Action.addToCart
+                        )
+                    )
                 }
             }
         }

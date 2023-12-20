@@ -15,7 +15,9 @@ public struct CounterDomain {
     
     public struct State: Equatable {
         public var count: Int = 0
-        public init() {}
+        public init(count: Int = 0) {
+            self.count = count
+        }
     }
     
     public enum Action: Equatable {

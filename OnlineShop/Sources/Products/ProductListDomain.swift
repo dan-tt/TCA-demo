@@ -74,6 +74,8 @@ public struct ProductListDomain {
             case .productsResponse(.failure):
                 state.isLoading = false
                 return .none
+            case .product:
+                return .none
             }
         }
         .forEach(\.products, action: /ProductListDomain.Action.product(id: action:)) {
