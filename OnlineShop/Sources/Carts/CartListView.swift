@@ -15,6 +15,8 @@ public struct CartListDomain {
     
     public struct State: Equatable {
         public var carts: IdentifiedArrayOf<CartDomain.State> = []
+        public var totalPrice: Double = 0
+        
         public init(carts: IdentifiedArrayOf<CartDomain.State> = []) {
             self.carts = carts
         }
@@ -22,6 +24,7 @@ public struct CartListDomain {
     
     public enum Action: Equatable {
         case cart(id: String, action: CartDomain.Action)
+        case getTotalPrice
     }
     
     public var body: some Reducer<State, Action> {
@@ -31,7 +34,12 @@ public struct CartListDomain {
                 switch action {
                 case .delete:
                     state.carts.removeAll(where: { $0.id == id })
+                    return .send(.getTotalPrice)
                 }
+            case .getTotalPrice:
+                state.totalPrice = state.carts.reduce(0.0,  {
+                    $0 + ($1.cart.product.price * Double($1.cart.quantity))
+                })
                 return .none
             }
         }
@@ -39,4 +47,51 @@ public struct CartListDomain {
             CartDomain()
         }
     }
+}
+
+public struct CartListView: View {
+    let store: StoreOf<CartListDomain>
+    
+    public init(store: StoreOf<CartListDomain>) {
+        self.store = store
+    }
+    
+    public var body: some View {
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            NavigationView {
+                List {
+                    ForEachStore(
+                        self.store.scope(
+                            state: \.carts,
+                            action: CartListDomain.Action.cart(id:action:)
+                        ),
+                        content: CartView.init(store:)
+                    )
+                }
+                .safeAreaInset(edge: .bottom) {
+                    Text("Total price: \(viewStore.totalPrice.description)")
+                }
+                .onAppear {
+                    viewStore.send(.getTotalPrice)
+                }
+                .navigationTitle("Cart")
+            }
+        }
+    }
+}
+
+#Preview {
+    CartListView(
+        store: Store(
+            initialState: CartListDomain.State(
+                carts: IdentifiedArrayOf(
+                    uniqueElements: Cart.sample.map {
+                        CartDomain.State(cart: $0)
+                    }
+                )
+            ), reducer: {
+                CartListDomain()
+            }
+        )
+    )
 }

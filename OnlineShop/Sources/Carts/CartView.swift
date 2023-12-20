@@ -62,7 +62,7 @@ public struct CartView: View {
                     Text(viewStore.product.title)
                         .lineLimit(1)
                         .font(.title2)
-                    Text("$\(viewStore.product.price.description)")
+                    Text("Price: $\(viewStore.product.price.description)")
                     Text("Quantity: \(viewStore.quantity)")
                 }
                 Spacer()
