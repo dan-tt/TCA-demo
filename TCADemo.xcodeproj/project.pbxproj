@@ -12,6 +12,8 @@
 		AF485D392B2FE2E700353D00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF485D382B2FE2E700353D00 /* Assets.xcassets */; };
 		AF485D3C2B2FE2E700353D00 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF485D3B2B2FE2E700353D00 /* Preview Assets.xcassets */; };
 		AF485D4A2B308F9200353D00 /* Products in Frameworks */ = {isa = PBXBuildFile; productRef = AF485D492B308F9200353D00 /* Products */; };
+		AF485D572B32A70D00353D00 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = AF485D562B32A70D00353D00 /* Common */; };
+		AF485D592B32A71100353D00 /* Carts in Frameworks */ = {isa = PBXBuildFile; productRef = AF485D582B32A71100353D00 /* Carts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,7 +30,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF485D592B32A71100353D00 /* Carts in Frameworks */,
 				AF485D4A2B308F9200353D00 /* Products in Frameworks */,
+				AF485D572B32A70D00353D00 /* Common in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +101,8 @@
 			name = TCADemo;
 			packageProductDependencies = (
 				AF485D492B308F9200353D00 /* Products */,
+				AF485D562B32A70D00353D00 /* Common */,
+				AF485D582B32A71100353D00 /* Carts */,
 			);
 			productName = TCADemo;
 			productReference = AF485D312B2FE2E600353D00 /* TCADemo.app */;
@@ -364,6 +370,14 @@
 		AF485D492B308F9200353D00 /* Products */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Products;
+		};
+		AF485D562B32A70D00353D00 /* Common */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Common;
+		};
+		AF485D582B32A71100353D00 /* Carts */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Carts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

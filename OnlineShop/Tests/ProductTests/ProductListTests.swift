@@ -5,6 +5,7 @@
 //  Created by Dan Tran on 18/12/2023.
 //
 
+import Common
 import ComposableArchitecture
 import XCTest
 import Products

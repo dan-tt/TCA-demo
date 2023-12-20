@@ -11,8 +11,16 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
+            name: "Common",
+            targets: ["Common"]
+        ),
+        .library(
             name: "Products",
             targets: ["Products"]
+        ),
+        .library(
+            name: "Carts",
+            targets: ["Carts"]
         ),
     ],
     dependencies: [
@@ -23,15 +31,35 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
+            name: "Common",
+            dependencies: []
+        ),
+        .target(
             name: "Products",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                "Common"
             ]
         ),
         .testTarget(
             name: "ProductTests",
             dependencies: [
+                "Common",
                 "Products"
+            ]
+        ),
+        .target(
+            name: "Carts",
+            dependencies: [
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                "Common"
+            ]
+        ),
+        .testTarget(
+            name: "CartsTests",
+            dependencies: [
+                "Carts"
             ]
         ),
     ]
